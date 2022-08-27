@@ -1,0 +1,12 @@
+{
+    "Login": "Acceso",
+    "E-Mail Address": "Correo Electrónico",
+    "Password": "Contraseña",
+    "Remember Me":"Recordar contraseña",
+    "auth.forgot": "Olvidó contraseña",
+    "Logout":"Cerrar sesión",
+    "titles.adminDropdownNav": "Navegación desplegable del administrador",
+    "titles.laravelroles":"Roles",
+    "titles.adminUserList": "Listado de usuarios",
+    "Register": "Registro"
+}

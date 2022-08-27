@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Interno extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected $fillable = ['nombre', 'tipo'];
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function getTipoAttribute($value)
+    {
+        switch ($this->attributes['tipo']) {
+            case '0':
+                $value =  'Abogado';
+                break;
+            case '1':
+                $value = 'Consultor, Gerente o Jefe';
+                break;
+        }
+        return ($value);
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Relacion uno a muchos
+    public function juicios()
+    {
+        return $this->hasMany('App\Models\Juicio');
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Relacion uno a muchos
+    public function abogados()
+    {
+        return $this->hasMany('App\Models\Abogado');
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Relacion uno a muchos
+    /*
+    public function jefes()
+    {
+        return $this->hasMany('App\Models\Abogado','jefe_id');
+    }
+    */
+}

@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
+class Actor extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected $table = "actores";
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected $fillable = 
+    [
+        'juicio_id',
+        'configuracion_id',
+        'referencia_id',
+        'tipo',
+        'usuario'
+    ];
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected $appends =
+    [
+        'estatu'
+    ];
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Relacion uno a muchos (inversa)
+    public function juicio()
+    {
+        return $this->belongsTo('App\Models\Juicio');
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Relacion uno a muchos (inversa)
+    public function configuracion()
+    {
+        return $this->belongsTo('App\Models\Configuracion');
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function especialidad()
+    {
+        return  $this->configuracion->belongsTo('App\Models\Especialidad');
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Relacion uno a muchos (inversa)
+    public function referencia()
+    {
+        return $this->belongsTo('App\Models\Referencia');
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public function getEstatuAttribute($value)
+    {
+        switch ($this->attributes['tipo']) {
+            case 'X':
+                $value =  '';
+                break;
+            case 'E':
+                $value = 'Investigado';
+                break;
+            case 'I':
+                $value = 'Imputado';
+                break;
+            case 'A':
+                $value = 'Acusado';
+                break;
+            case 'C':
+                $value = 'Condenado';
+                break;
+        }
+        return ($value);
+    }
+    
+}

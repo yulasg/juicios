@@ -1,0 +1,68 @@
+version: "3"
+services:
+  Juicio:
+    container_name: Juicio
+    build:
+      context: ./docker/7.4
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: "${WWWGROUP}"
+    image: juicio/app
+    ports:
+      - "8074:80"
+    environment:
+      WWWUSER: "${WWWUSER}"
+      LARAVEL_SAIL: 1
+    volumes:
+      - ".:/var/www/html"
+    networks:
+      - sail
+    depends_on:
+      - pgsql
+  pgsql:
+    container_name: postgresql_juicio
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      PGPASSWORD: "${DB_PASSWORD:-secret}"
+      POSTGRES_DB: "${DB_DATABASE}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-secret}"
+    volumes:
+      - "sailpostgresql:/var/lib/postgresql/data"
+      - ./docker/pgsql:/docker-entrypoint-initdb.d
+    networks:
+      - sail
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-q",
+          "-d",
+          "${DB_DATABASE}",
+          "-U",
+          "${DB_USERNAME}",
+        ]
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: database@juicio.gob.ve
+      PGADMIN_DEFAULT_PASSWORD: 123456789
+    volumes:
+      - sailpgadmin:/root/.pgadmin
+
+    ports:
+      - "8071:80"
+    networks:
+      - sail
+    restart: unless-stopped
+networks:
+  sail:
+volumes:
+  sailpostgresql:
+    driver: local
+  sailpgadmin:
+    driver: local
